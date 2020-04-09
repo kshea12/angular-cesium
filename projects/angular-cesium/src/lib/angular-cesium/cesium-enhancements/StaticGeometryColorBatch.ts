@@ -1,28 +1,39 @@
+import {
+  AssociativeArray,
+  BoundingSphereState,
+  Color,
+  ColorGeometryInstanceAttribute,
+  defined,
+  DistanceDisplayCondition,
+  DistanceDisplayConditionGeometryInstanceAttribute,
+  ShowGeometryInstanceAttribute,
+  Primitive,
+  ShadowMode,
+  StaticGeometryColorBatch,
+  ColorMaterialProperty,
+  MaterialProperty,
+  Property,
+} from 'cesium';
+
 /**
  * Fix for the constant entity shadowing.
  * PR in Cesium repo: https://github.com/AnalyticalGraphicsInc/cesium/pull/5736
  */
 
 // tslint:disable
-const AssociativeArray = Cesium.AssociativeArray;
-const Color = Cesium.Color;
-const ColorGeometryInstanceAttribute = Cesium.ColorGeometryInstanceAttribute;
-const defined = Cesium.defined;
-const DistanceDisplayCondition = Cesium.DistanceDisplayCondition;
-const DistanceDisplayConditionGeometryInstanceAttribute = Cesium.DistanceDisplayConditionGeometryInstanceAttribute;
-const ShowGeometryInstanceAttribute = Cesium.ShowGeometryInstanceAttribute;
-const Primitive = Cesium.Primitive;
-const ShadowMode = Cesium.ShadowMode;
-const BoundingSphereState = Cesium.BoundingSphereState;
-const ColorMaterialProperty = Cesium.ColorMaterialProperty;
-const MaterialProperty = Cesium.MaterialProperty;
-const Property = Cesium.Property;
-
 var colorScratch = new Color();
 var distanceDisplayConditionScratch = new DistanceDisplayCondition();
 var defaultDistanceDisplayCondition = new DistanceDisplayCondition();
 
-function Batch(primitives, translucent, appearanceType, depthFailAppearanceType, depthFailMaterialProperty, closed, shadows) {
+function Batch(
+  primitives,
+  translucent,
+  appearanceType,
+  depthFailAppearanceType,
+  depthFailMaterialProperty,
+  closed,
+  shadows
+) {
   this.translucent = translucent;
   this.appearanceType = appearanceType;
   this.depthFailAppearanceType = depthFailAppearanceType;
@@ -43,10 +54,13 @@ function Batch(primitives, translucent, appearanceType, depthFailAppearanceType,
   this.showsUpdated = new AssociativeArray();
   this.itemsToRemove = [];
   this.invalidated = false;
-  
+
   var removeMaterialSubscription;
   if (defined(depthFailMaterialProperty)) {
-    removeMaterialSubscription = depthFailMaterialProperty.definitionChanged.addEventListener(Batch.prototype.onMaterialChanged, this);
+    removeMaterialSubscription = depthFailMaterialProperty.definitionChanged.addEventListener(
+      Batch.prototype.onMaterialChanged,
+      this
+    );
   }
   this.removeMaterialSubscription = removeMaterialSubscription;
 }
@@ -72,15 +86,27 @@ Batch.prototype.add = function (updater, instance) {
   this.createPrimitive = true;
   this.geometry.set(id, instance);
   this.updaters.set(id, updater);
-  if (!updater.hasConstantFill || !updater.fillMaterialProperty.isConstant || !Property.isConstant(updater.distanceDisplayConditionProperty)) {
+  if (
+    !updater.hasConstantFill ||
+    !updater.fillMaterialProperty.isConstant ||
+    !Property.isConstant(updater.distanceDisplayConditionProperty)
+  ) {
     this.updatersWithAttributes.set(id, updater);
   } else {
     var that = this;
-    this.subscriptions.set(id, updater.entity.definitionChanged.addEventListener(function (entity, propertyName, newValue, oldValue) {
-      if (propertyName === 'isShowing') {
-        that.showsUpdated.set(updater.id, updater);
-      }
-    }));
+    this.subscriptions.set(
+      id,
+      updater.entity.definitionChanged.addEventListener(function (
+        entity,
+        propertyName,
+        newValue,
+        oldValue
+      ) {
+        if (propertyName === "isShowing") {
+          that.showsUpdated.set(updater.id, updater);
+        }
+      })
+    );
   }
 };
 
@@ -104,7 +130,7 @@ Batch.prototype.update = function (time) {
   var primitives = this.primitives;
   var attributes;
   var i;
-  
+
   if (this.createPrimitive) {
     var geometries = this.geometry.values;
     var geometriesLength = geometries.length;
@@ -116,12 +142,12 @@ Batch.prototype.update = function (time) {
           primitives.remove(primitive);
         }
       }
-      
+
       for (i = 0; i < geometriesLength; i++) {
         var geometryItem = geometries[i];
         var originalAttributes = geometryItem.attributes;
         attributes = this.attributes.get(geometryItem.id.id);
-        
+
         if (defined(attributes)) {
           if (defined(originalAttributes.show)) {
             originalAttributes.show.value = attributes.show;
@@ -134,30 +160,36 @@ Batch.prototype.update = function (time) {
           }
         }
       }
-      
+
       var depthFailAppearance;
       if (defined(this.depthFailAppearanceType)) {
         if (defined(this.depthFailMaterialProperty)) {
-          this.depthFailMaterial = MaterialProperty.getValue(time, this.depthFailMaterialProperty, this.depthFailMaterial);
+          this.depthFailMaterial = MaterialProperty.getValue(
+            time,
+            this.depthFailMaterialProperty,
+            this.depthFailMaterial
+          );
         }
         depthFailAppearance = new this.depthFailAppearanceType({
           material: this.depthFailMaterial,
           translucent: this.translucent,
-          closed: this.closed
+          closed: this.closed,
         });
       }
-      
+
       primitive = new Primitive({
         show: false,
         asynchronous: true,
         geometryInstances: geometries,
         appearance: new this.appearanceType({
-          flat: this.shadows === ShadowMode.DISABLED || this.shadows === ShadowMode.CAST_ONLY,
+          flat:
+            this.shadows === ShadowMode.DISABLED ||
+            this.shadows === ShadowMode.CAST_ONLY,
           translucent: this.translucent,
-          closed: this.closed
+          closed: this.closed,
         }),
         depthFailAppearance: depthFailAppearance,
-        shadows: this.shadows
+        shadows: this.shadows,
       });
       primitives.add(primitive);
       isUpdated = false;
@@ -172,7 +204,7 @@ Batch.prototype.update = function (time) {
         this.oldPrimitive = undefined;
       }
     }
-    
+
     this.attributes.removeAll();
     this.primitive = primitive;
     this.createPrimitive = false;
@@ -183,62 +215,120 @@ Batch.prototype.update = function (time) {
       primitives.remove(this.oldPrimitive);
       this.oldPrimitive = undefined;
     }
-    
-    if (defined(this.depthFailAppearanceType) && !(this.depthFailMaterialProperty instanceof ColorMaterialProperty)) {
-      this.depthFailMaterial = MaterialProperty.getValue(time, this.depthFailMaterialProperty, this.depthFailMaterial);
+
+    if (
+      defined(this.depthFailAppearanceType) &&
+      !(this.depthFailMaterialProperty instanceof ColorMaterialProperty)
+    ) {
+      this.depthFailMaterial = MaterialProperty.getValue(
+        time,
+        this.depthFailMaterialProperty,
+        this.depthFailMaterial
+      );
       this.primitive.depthFailAppearance.material = this.depthFailMaterial;
     }
-    
+
     var updatersWithAttributes = this.updatersWithAttributes.values;
     var length = updatersWithAttributes.length;
     var waitingOnCreate = this.waitingOnCreate;
     for (i = 0; i < length; i++) {
       var updater = updatersWithAttributes[i];
       var instance = this.geometry.get(updater.id);
-      
+
       attributes = this.attributes.get(instance.id.id);
       if (!defined(attributes)) {
         attributes = primitive.getGeometryInstanceAttributes(instance.id);
         this.attributes.set(instance.id.id, attributes);
       }
-      
+
       if (!updater.fillMaterialProperty.isConstant || waitingOnCreate) {
         var colorProperty = updater.fillMaterialProperty.color;
-        var resultColor = Property.getValueOrDefault(colorProperty, time, Color.WHITE, colorScratch);
+        var resultColor = Property.getValueOrDefault(
+          colorProperty,
+          time,
+          Color.WHITE,
+          colorScratch
+        );
         if (!Color.equals(attributes._lastColor, resultColor)) {
-          attributes._lastColor = Color.clone(resultColor, attributes._lastColor);
-          attributes.color = ColorGeometryInstanceAttribute.toValue(resultColor, attributes.color);
-          if ((this.translucent && attributes.color[3] === 255) || (!this.translucent && attributes.color[3] !== 255)) {
+          attributes._lastColor = Color.clone(
+            resultColor,
+            attributes._lastColor
+          );
+          attributes.color = ColorGeometryInstanceAttribute.toValue(
+            resultColor,
+            attributes.color
+          );
+          if (
+            (this.translucent && attributes.color[3] === 255) ||
+            (!this.translucent && attributes.color[3] !== 255)
+          ) {
             this.itemsToRemove[removedCount++] = updater;
           }
         }
       }
-      
-      if (defined(this.depthFailAppearanceType) && updater.depthFailMaterialProperty instanceof ColorMaterialProperty && (!updater.depthFailMaterialProperty.isConstant || waitingOnCreate)) {
+
+      if (
+        defined(this.depthFailAppearanceType) &&
+        updater.depthFailMaterialProperty instanceof ColorMaterialProperty &&
+        (!updater.depthFailMaterialProperty.isConstant || waitingOnCreate)
+      ) {
         var depthFailColorProperty = updater.depthFailMaterialProperty.color;
-        var depthColor = Property.getValueOrDefault(depthFailColorProperty, time, Color.WHITE, colorScratch);
+        var depthColor = Property.getValueOrDefault(
+          depthFailColorProperty,
+          time,
+          Color.WHITE,
+          colorScratch
+        );
         if (!Color.equals(attributes._lastDepthFailColor, depthColor)) {
-          attributes._lastDepthFailColor = Color.clone(depthColor, attributes._lastDepthFailColor);
-          attributes.depthFailColor = ColorGeometryInstanceAttribute.toValue(depthColor, attributes.depthFailColor);
+          attributes._lastDepthFailColor = Color.clone(
+            depthColor,
+            attributes._lastDepthFailColor
+          );
+          attributes.depthFailColor = ColorGeometryInstanceAttribute.toValue(
+            depthColor,
+            attributes.depthFailColor
+          );
         }
       }
-      
-      var show = updater.entity.isShowing && (updater.hasConstantFill || updater.isFilled(time));
+
+      var show =
+        updater.entity.isShowing &&
+        (updater.hasConstantFill || updater.isFilled(time));
       var currentShow = attributes.show[0] === 1;
       if (show !== currentShow) {
-        attributes.show = ShowGeometryInstanceAttribute.toValue(show, attributes.show);
+        attributes.show = ShowGeometryInstanceAttribute.toValue(
+          show,
+          attributes.show
+        );
       }
-      
-      var distanceDisplayConditionProperty = updater.distanceDisplayConditionProperty;
+
+      var distanceDisplayConditionProperty =
+        updater.distanceDisplayConditionProperty;
       if (!Property.isConstant(distanceDisplayConditionProperty)) {
-        var distanceDisplayCondition = Property.getValueOrDefault(distanceDisplayConditionProperty, time, defaultDistanceDisplayCondition, distanceDisplayConditionScratch);
-        if (!DistanceDisplayCondition.equals(distanceDisplayCondition, attributes._lastDistanceDisplayCondition)) {
-          attributes._lastDistanceDisplayCondition = DistanceDisplayCondition.clone(distanceDisplayCondition, attributes._lastDistanceDisplayCondition);
-          attributes.distanceDisplayCondition = DistanceDisplayConditionGeometryInstanceAttribute.toValue(distanceDisplayCondition, attributes.distanceDisplayCondition);
+        var distanceDisplayCondition = Property.getValueOrDefault(
+          distanceDisplayConditionProperty,
+          time,
+          defaultDistanceDisplayCondition,
+          distanceDisplayConditionScratch
+        );
+        if (
+          !DistanceDisplayCondition.equals(
+            distanceDisplayCondition,
+            attributes._lastDistanceDisplayCondition
+          )
+        ) {
+          attributes._lastDistanceDisplayCondition = DistanceDisplayCondition.clone(
+            distanceDisplayCondition,
+            attributes._lastDistanceDisplayCondition
+          );
+          attributes.distanceDisplayCondition = DistanceDisplayConditionGeometryInstanceAttribute.toValue(
+            distanceDisplayCondition,
+            attributes.distanceDisplayCondition
+          );
         }
       }
     }
-    
+
     this.updateShows(primitive);
     this.waitingOnCreate = false;
   } else if (defined(primitive) && !primitive.ready) {
@@ -254,17 +344,20 @@ Batch.prototype.updateShows = function (primitive) {
   for (var i = 0; i < length; i++) {
     var updater = showsUpdated[i];
     var instance = this.geometry.get(updater.id);
-    
+
     var attributes = this.attributes.get(instance.id.id);
     if (!defined(attributes)) {
       attributes = primitive.getGeometryInstanceAttributes(instance.id);
       this.attributes.set(instance.id.id, attributes);
     }
-    
+
     var show = updater.entity.isShowing;
     var currentShow = attributes.show[0] === 1;
     if (show !== currentShow) {
-      attributes.show = ShowGeometryInstanceAttribute.toValue(show, attributes.show);
+      attributes.show = ShowGeometryInstanceAttribute.toValue(
+        show,
+        attributes.show
+      );
     }
   }
   this.showsUpdated.removeAll();
@@ -280,8 +373,11 @@ Batch.prototype.getBoundingSphere = function (updater, result) {
     return BoundingSphereState.PENDING;
   }
   var attributes = primitive.getGeometryInstanceAttributes(updater.entity);
-  if (!defined(attributes) || !defined(attributes.boundingSphere) ||//
-    (defined(attributes.show) && attributes.show[0] === 0)) {
+  if (
+    !defined(attributes) ||
+    !defined(attributes.boundingSphere) || //
+    (defined(attributes.show) && attributes.show[0] === 0)
+  ) {
     return BoundingSphereState.FAILED;
   }
   attributes.boundingSphere.clone(result);
@@ -290,7 +386,7 @@ Batch.prototype.getBoundingSphere = function (updater, result) {
 
 Batch.prototype.removeAllPrimitives = function () {
   var primitives = this.primitives;
-  
+
   var primitive = this.primitive;
   if (defined(primitive)) {
     primitives.remove(primitive);
@@ -298,7 +394,7 @@ Batch.prototype.removeAllPrimitives = function () {
     this.geometry.removeAll();
     this.updaters.removeAll();
   }
-  
+
   var oldPrimitive = this.oldPrimitive;
   if (defined(oldPrimitive)) {
     primitives.remove(oldPrimitive);
@@ -321,14 +417,13 @@ Batch.prototype.destroy = function () {
   }
 };
 
-
 let wasFixed = false;
 
 export function fixCesiumEntitiesShadows() {
   if (wasFixed) {
     return;
   }
-  Cesium.StaticGeometryColorBatch.prototype.add = function (time: any, updater: any) {
+  StaticGeometryColorBatch.prototype.add = function (time: any, updater: any) {
     var items;
     var translucent;
     var instance = updater.createFillGeometryInstance(time);
@@ -339,7 +434,7 @@ export function fixCesiumEntitiesShadows() {
       items = this._translucentItems;
       translucent = true;
     }
-    
+
     var length = items.length;
     for (var i = 0; i < length; i++) {
       var item = items[i];
@@ -347,10 +442,17 @@ export function fixCesiumEntitiesShadows() {
         item.add(updater, instance);
         return;
       }
-      
     }
-    
-    var batch: any = new Batch(this._primitives, translucent, this._appearanceType, this._depthFailAppearanceType, updater.depthFailMaterialProperty, this._closed, this._shadows);
+
+    var batch: any = new Batch(
+      this._primitives,
+      translucent,
+      this._appearanceType,
+      this._depthFailAppearanceType,
+      updater.depthFailMaterialProperty,
+      this._closed,
+      this._shadows
+    );
     batch.add(updater, instance);
     items.push(batch);
   };

@@ -22,6 +22,7 @@ import { BasicEditUpdate } from '../../../models/basic-edit-update';
 import { generateKey } from '../../utils';
 import { CesiumEventModifier } from '../../../../angular-cesium/services/map-events-mananger/consts/cesium-event-modifier.enum';
 import { CesiumService } from '../../../../angular-cesium';
+import { ClassificationType, Color, ShadowMode } from 'cesium';
 
 export const DEFAULT_ELLIPSE_OPTIONS: EllipseEditOptions = {
   addPointEvent: CesiumEvent.LEFT_CLICK,
@@ -31,18 +32,18 @@ export const DEFAULT_ELLIPSE_OPTIONS: EllipseEditOptions = {
   circleToEllipseTransformEventModifier: CesiumEventModifier.ALT,
   allowDrag: true,
   ellipseProps: {
-    material: Cesium.Color.CORNFLOWERBLUE.withAlpha(0.4),
+    material: Color.CORNFLOWERBLUE.withAlpha(0.4),
     fill: true,
     outline: true,
     outlineWidth: 1,
-    outlineColor: Cesium.Color.WHITE.withAlpha(0.8),
-    classificationType: Cesium.ClassificationType.BOTH,
+    outlineColor: Color.WHITE.withAlpha(0.8),
+    classificationType: ClassificationType.BOTH,
     zIndex: 0,
-    shadows: Cesium.ShadowMode.DISABLED,
+    shadows: ShadowMode.DISABLED,
   },
   pointProps: {
-    color: Cesium.Color.WHITE,
-    outlineColor: Cesium.Color.BLACK.withAlpha(0.2),
+    color: Color.WHITE,
+    outlineColor: Color.BLACK.withAlpha(0.2),
     outlineWidth: 1,
     pixelSize: 13,
     virtualPointPixelSize: 8,
@@ -52,7 +53,7 @@ export const DEFAULT_ELLIPSE_OPTIONS: EllipseEditOptions = {
   },
   polylineProps: {
     width: 1,
-    material: () => Cesium.Color.WHITE,
+    material: () => Color.WHITE,
   },
   circleToEllipseTransformation: false,
 };

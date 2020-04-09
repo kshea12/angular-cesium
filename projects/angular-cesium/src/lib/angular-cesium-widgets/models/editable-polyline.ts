@@ -8,6 +8,8 @@ import { PointProps } from './point-edit-options';
 import { PolylineEditOptions, PolylineProps } from './polyline-edit-options';
 import { GeoUtilsService } from '../../angular-cesium/services/geo-utils/geo-utils.service';
 import { defaultLabelProps, LabelProps } from './label-props';
+import { Cartesian3 as CesiumCartesian3 } from 'cesium';
+import { CallbackProperty } from 'cesium';
 
 export class EditablePolyline extends AcEntity {
   private positions: EditPoint[] = [];
@@ -132,7 +134,7 @@ export class EditablePolyline extends AcEntity {
   }
 
   private setMiddleVirtualPoint(firstP: EditPoint, secondP: EditPoint): EditPoint {
-    const midPointCartesian3 = Cesium.Cartesian3.lerp(firstP.getPosition(), secondP.getPosition(), 0.5, new Cesium.Cartesian3());
+    const midPointCartesian3 = CesiumCartesian3.lerp(firstP.getPosition(), secondP.getPosition(), 0.5, new CesiumCartesian3());
     const midPoint = new EditPoint(this.id, midPointCartesian3, this._pointProps);
     midPoint.setVirtualEditPoint(true);
 
@@ -142,7 +144,7 @@ export class EditablePolyline extends AcEntity {
   }
 
   private updateMiddleVirtualPoint(virtualEditPoint: EditPoint, prevPoint: EditPoint, nextPoint: EditPoint) {
-    const midPointCartesian3 = Cesium.Cartesian3.lerp(prevPoint.getPosition(), nextPoint.getPosition(), 0.5, new Cesium.Cartesian3());
+    const midPointCartesian3 = CesiumCartesian3.lerp(prevPoint.getPosition(), nextPoint.getPosition(), 0.5, new CesiumCartesian3());
     virtualEditPoint.setPosition(midPointCartesian3);
   }
 
@@ -302,7 +304,7 @@ export class EditablePolyline extends AcEntity {
   }
 
   getPositionsCallbackProperty(): Cartesian3[] {
-    return new Cesium.CallbackProperty(this.getPositions.bind(this), false);
+    return new CallbackProperty(this.getPositions.bind(this), false);
   }
 
   private removePosition(point: EditPoint) {

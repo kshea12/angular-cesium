@@ -8,6 +8,9 @@ import { GeoUtilsService } from '../../angular-cesium/services/geo-utils/geo-uti
 import { RectangleEditOptions, RectangleProps } from './rectangle-edit-options';
 import { PointProps } from './point-edit-options';
 import { defaultLabelProps, LabelProps } from './label-props';
+import { Cartesian3 as CesiumCartesian3 } from 'cesium';
+import { Rectangle as CesiumRectangle } from 'cesium';
+import { CallbackProperty, Cartographic } from 'cesium';
 
 export class EditableRectangle extends AcEntity {
   private positions: EditPoint[] = [];
@@ -141,13 +144,13 @@ export class EditableRectangle extends AcEntity {
       this.lastDraggedToPosition = startMovingPosition;
     }
 
-    const lastDraggedCartographic = Cesium.Cartographic.fromCartesian(this.lastDraggedToPosition);
-    const draggedToPositionCartographic = Cesium.Cartographic.fromCartesian(draggedToPosition);
+    const lastDraggedCartographic = Cartographic.fromCartesian(this.lastDraggedToPosition);
+    const draggedToPositionCartographic = Cartographic.fromCartesian(draggedToPosition);
     this.getRealPoints().forEach(point => {
-      const cartographic = Cesium.Cartographic.fromCartesian(point.getPosition());
+      const cartographic = Cartographic.fromCartesian(point.getPosition());
       cartographic.longitude += (draggedToPositionCartographic.longitude - lastDraggedCartographic.longitude);
       cartographic.latitude += (draggedToPositionCartographic.latitude - lastDraggedCartographic.latitude);
-      point.setPosition(Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0));
+      point.setPosition(CesiumCartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0));
     });
 
     this.updatePointsLayer(...this.positions);
@@ -187,7 +190,7 @@ export class EditableRectangle extends AcEntity {
   }
 
   getRealPositionsCallbackProperty() {
-    return new Cesium.CallbackProperty(this.getRealPositions.bind(this), false);
+    return new CallbackProperty(this.getRealPositions.bind(this), false);
   }
 
   getRealPoints(): EditPoint[] {
@@ -199,11 +202,11 @@ export class EditableRectangle extends AcEntity {
   }
 
   getRectangle(): Rectangle {
-    const cartographics = this.getPositions().map(cartesian => Cesium.Cartographic.fromCartesian(cartesian));
+    const cartographics = this.getPositions().map(cartesian => Cartographic.fromCartesian(cartesian));
     const longitudes = cartographics.map(position => position.longitude);
     const latitudes = cartographics.map(position =>  position.latitude);
 
-    return new Cesium.Rectangle(
+    return new CesiumRectangle(
       Math.min(...longitudes),
       Math.min(...latitudes),
       Math.max(...longitudes),
@@ -212,7 +215,7 @@ export class EditableRectangle extends AcEntity {
   }
 
   getRectangleCallbackProperty(): Rectangle {
-    return new Cesium.CallbackProperty(this.getRectangle.bind(this), false);
+    return new CallbackProperty(this.getRectangle.bind(this), false);
   }
 
   private removePosition(point: EditPoint) {

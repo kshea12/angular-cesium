@@ -7,6 +7,9 @@ import { PointProps } from './point-edit-options';
 import { HippodromeEditOptions, HippodromeProps } from './hippodrome-edit-options';
 import { GeoUtilsService } from '../../angular-cesium/services/geo-utils/geo-utils.service';
 import { defaultLabelProps, LabelProps } from './label-props';
+import { Cartesian3 as CesiumCartesian3 } from 'cesium';
+import { Math as CesiumMath } from 'cesium';
+import { CallbackProperty,  } from 'cesium';
 
 export class EditableHippodrome extends AcEntity {
   private positions: EditPoint[] = [];
@@ -137,12 +140,12 @@ export class EditableHippodrome extends AcEntity {
     const firstP = this.getRealPoints()[0];
     const secP = this.getRealPoints()[1];
 
-    const midPointCartesian3 = Cesium.Cartesian3.lerp(firstP.getPosition(), secP.getPosition(), 0.5, new Cesium.Cartesian3());
+    const midPointCartesian3 = CesiumCartesian3.lerp(firstP.getPosition(), secP.getPosition(), 0.5, new CesiumCartesian3());
     const bearingDeg = this.coordinateConverter.bearingToCartesian(firstP.getPosition(), secP.getPosition());
 
-    const upAzimuth = Cesium.Math.toRadians(bearingDeg) - Math.PI / 2;
+    const upAzimuth = CesiumMath.toRadians(bearingDeg) - Math.PI / 2;
     this.createMiddleEditablePoint(midPointCartesian3, upAzimuth);
-    const downAzimuth = Cesium.Math.toRadians(bearingDeg) + Math.PI / 2;
+    const downAzimuth = CesiumMath.toRadians(bearingDeg) + Math.PI / 2;
     this.createMiddleEditablePoint(midPointCartesian3, downAzimuth);
   }
 
@@ -172,7 +175,7 @@ export class EditableHippodrome extends AcEntity {
   private changeWidthByNewPoint(toPosition: Cartesian3) {
     const firstP = this.getRealPoints()[0];
     const secP = this.getRealPoints()[1];
-    const midPointCartesian3 = Cesium.Cartesian3.lerp(firstP.getPosition(), secP.getPosition(), 0.5, new Cesium.Cartesian3());
+    const midPointCartesian3 = CesiumCartesian3.lerp(firstP.getPosition(), secP.getPosition(), 0.5, new CesiumCartesian3());
 
     const bearingDeg = this.coordinateConverter.bearingToCartesian(midPointCartesian3, toPosition);
     let normalizedBearingDeb = bearingDeg;
@@ -195,7 +198,7 @@ export class EditableHippodrome extends AcEntity {
     }
 
     const distanceMeters = Math.abs(GeoUtilsService.distance(midPointCartesian3, toPosition));
-    const radiusWidth = Math.sin(Cesium.Math.toRadians(fixedBearingDeg)) * distanceMeters;
+    const radiusWidth = Math.sin(CesiumMath.toRadians(fixedBearingDeg)) * distanceMeters;
 
     this.hippodromeProps.width = Math.abs(radiusWidth) * 2;
     this.createHeightEditPoints();
@@ -253,7 +256,7 @@ export class EditableHippodrome extends AcEntity {
   }
 
   getRealPositionsCallbackProperty() {
-    return new Cesium.CallbackProperty(this.getRealPositions.bind(this), false);
+    return new CallbackProperty(this.getRealPositions.bind(this), false);
   }
 
   getRealPoints(): EditPoint[] {

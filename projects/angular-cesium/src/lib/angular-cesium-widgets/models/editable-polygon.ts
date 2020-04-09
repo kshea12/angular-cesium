@@ -9,6 +9,8 @@ import { PolygonEditOptions, PolygonProps } from './polygon-edit-options';
 import { PointProps } from './point-edit-options';
 import { PolylineProps } from './polyline-edit-options';
 import { defaultLabelProps, LabelProps } from './label-props';
+import { Cartesian3 as CesiumCartesian3 } from 'cesium';
+import { CallbackProperty, PolygonHierarchy } from 'cesium';
 
 export class EditablePolygon extends AcEntity {
   private positions: EditPoint[] = [];
@@ -137,7 +139,7 @@ export class EditablePolygon extends AcEntity {
   }
 
   private setMiddleVirtualPoint(firstP: EditPoint, secondP: EditPoint): EditPoint {
-    const midPointCartesian3 = Cesium.Cartesian3.lerp(firstP.getPosition(), secondP.getPosition(), 0.5, new Cesium.Cartesian3());
+    const midPointCartesian3 = CesiumCartesian3.lerp(firstP.getPosition(), secondP.getPosition(), 0.5, new CesiumCartesian3());
     const midPoint = new EditPoint(this.id, midPointCartesian3, this.defaultPointProps);
     midPoint.setVirtualEditPoint(true);
 
@@ -147,7 +149,7 @@ export class EditablePolygon extends AcEntity {
   }
 
   private updateMiddleVirtualPoint(virtualEditPoint: EditPoint, prevPoint: EditPoint, nextPoint: EditPoint) {
-    const midPointCartesian3 = Cesium.Cartesian3.lerp(prevPoint.getPosition(), nextPoint.getPosition(), 0.5, new Cesium.Cartesian3());
+    const midPointCartesian3 = CesiumCartesian3.lerp(prevPoint.getPosition(), nextPoint.getPosition(), 0.5, new CesiumCartesian3());
     virtualEditPoint.setPosition(midPointCartesian3);
   }
 
@@ -302,11 +304,11 @@ export class EditablePolygon extends AcEntity {
 
   getPositionsHierarchy(): Cartesian3[] {
     const positions = this.positions.filter(position => !position.isVirtualEditPoint()).map(position => position.getPosition().clone());
-    return new Cesium.PolygonHierarchy(positions);
+    return new PolygonHierarchy(positions);
   }
 
   getPositionsHierarchyCallbackProperty(): Cartesian3[] {
-    return new Cesium.CallbackProperty(this.getPositionsHierarchy.bind(this), false);
+    return new CallbackProperty(this.getPositionsHierarchy.bind(this), false);
   }
 
   private removePosition(point: EditPoint) {

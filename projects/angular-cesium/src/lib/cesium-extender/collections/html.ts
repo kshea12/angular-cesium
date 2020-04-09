@@ -1,4 +1,5 @@
 import { HtmlPrimitive } from '../primitives';
+import { defined } from 'cesium';
 
 export class HtmlCollection {
   private _collection: HtmlPrimitive[] = [];
@@ -43,6 +44,6 @@ export class HtmlCollection {
   }
 
   contains(html: HtmlPrimitive): boolean {
-    return Cesium.defined(html) && html.collection === this;
+    return defined(html) && html.collection === this;
   }
 }

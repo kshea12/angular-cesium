@@ -3,6 +3,8 @@ import { MapsManagerService } from '../../angular-cesium/services/maps-manager/m
 import { CameraService } from '../../angular-cesium/services/camera/camera.service';
 import { CesiumService } from '../../angular-cesium/services/cesium/cesium.service';
 import { AcMapComponent } from '../../angular-cesium/components/ac-map/ac-map.component';
+import { Rectangle as CesiumRectangle } from 'cesium';
+import { Cartographic } from 'cesium';
 
 interface ZoomData {
   container: HTMLElement;
@@ -255,10 +257,10 @@ export class ZoomToRectangleService {
     if (!cartesian1 || !cartesian2) {
       return false;
     }
-    const cartographic1 = Cesium.Cartographic.fromCartesian(cartesian1);
-    const cartographic2 = Cesium.Cartographic.fromCartesian(cartesian2);
+    const cartographic1 = Cartographic.fromCartesian(cartesian1);
+    const cartographic2 = Cartographic.fromCartesian(cartesian2);
     cameraService.cameraFlyTo({
-      destination: new Cesium.Rectangle(
+      destination: new CesiumRectangle(
         Math.min(cartographic1.longitude, cartographic2.longitude),
         Math.min(cartographic1.latitude, cartographic2.latitude),
         Math.max(cartographic1.longitude, cartographic2.longitude),

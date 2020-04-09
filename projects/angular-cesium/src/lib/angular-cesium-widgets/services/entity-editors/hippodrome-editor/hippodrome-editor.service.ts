@@ -19,6 +19,7 @@ import { EditableHippodrome } from '../../../models/editable-hippodrome';
 import { PointProps } from '../../../models/point-edit-options';
 import { LabelProps } from '../../../models/label-props';
 import { generateKey } from '../../utils';
+import { Color, ClassificationType, ShadowMode } from 'cesium';
 
 export const DEFAULT_HIPPODROME_OPTIONS: HippodromeEditOptions = {
   addPointEvent: CesiumEvent.LEFT_CLICK,
@@ -27,18 +28,18 @@ export const DEFAULT_HIPPODROME_OPTIONS: HippodromeEditOptions = {
   allowDrag: true,
   hippodromeProps: {
     fill: true,
-    material: Cesium.Color.CORNFLOWERBLUE.withAlpha(0.4),
+    material: Color.CORNFLOWERBLUE.withAlpha(0.4),
     outline: true,
     width: 200000.0,
     outlineWidth: 1,
-    outlineColor: Cesium.Color.WHITE.withAlpha(0.8),
-    classificationType: Cesium.ClassificationType.BOTH,
+    outlineColor: Color.WHITE.withAlpha(0.8),
+    classificationType: ClassificationType.BOTH,
     zIndex: 0,
-    shadows: Cesium.ShadowMode.DISABLED,
+    shadows: ShadowMode.DISABLED,
   },
   pointProps: {
-    color: Cesium.Color.WHITE,
-    outlineColor: Cesium.Color.BLACK.withAlpha(0.2),
+    color: Color.WHITE,
+    outlineColor: Color.BLACK.withAlpha(0.2),
     outlineWidth: 1,
     pixelSize: 13,
     virtualPointPixelSize: 8,

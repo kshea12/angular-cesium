@@ -21,6 +21,7 @@ import { ClampTo3DOptions } from '../../../models/polyline-edit-options';
 import { PointProps } from '../../../models/point-edit-options';
 import { LabelProps } from '../../../models/label-props';
 import { debounce, generateKey } from '../../utils';
+import { Cartographic, ClassificationType, Color, HeightReference, sampleTerrain, when } from 'cesium';
 
 export const DEFAULT_POLYGON_OPTIONS: PolygonEditOptions = {
   addPointEvent: CesiumEvent.LEFT_CLICK,
@@ -30,8 +31,8 @@ export const DEFAULT_POLYGON_OPTIONS: PolygonEditOptions = {
   dragShapeEvent: CesiumEvent.LEFT_CLICK_DRAG,
   allowDrag: true,
   pointProps: {
-    color: Cesium.Color.WHITE.withAlpha(0.95),
-    outlineColor: Cesium.Color.BLACK.withAlpha(0.2),
+    color: Color.WHITE.withAlpha(0.95),
+    outlineColor: Color.BLACK.withAlpha(0.2),
     outlineWidth: 1,
     pixelSize: 13,
     virtualPointPixelSize: 8,
@@ -40,17 +41,17 @@ export const DEFAULT_POLYGON_OPTIONS: PolygonEditOptions = {
     disableDepthTestDistance: Number.POSITIVE_INFINITY,
   },
   polygonProps: {
-    material: Cesium.Color.CORNFLOWERBLUE.withAlpha(0.4),
+    material: Color.CORNFLOWERBLUE.withAlpha(0.4),
     fill: true,
-    classificationType: Cesium.ClassificationType.BOTH,
+    classificationType: ClassificationType.BOTH,
     zIndex: 0,
   },
   polylineProps: {
-    material: () => Cesium.Color.WHITE,
+    material: () => Color.WHITE,
     width: 3,
     clampToGround: false,
     zIndex: 0,
-    classificationType: Cesium.ClassificationType.BOTH,
+    classificationType: ClassificationType.BOTH,
   },
   clampHeightTo3D: false,
   clampHeightTo3DOptions: {
@@ -146,10 +147,10 @@ export class PolygonsEditorService {
         // });
       } else {
         const cartographics = points.map(point => this.coordinateConverter.cartesian3ToCartographic(point.getPosition()));
-        const promise = Cesium.sampleTerrain(this.cesiumScene.terrainProvider, 11, cartographics);
-        Cesium.when(promise, (updatedPositions) => {
+        const promise = sampleTerrain(this.cesiumScene.terrainProvider, 11, cartographics);
+        when(promise, (updatedPositions) => {
           points.forEach((point, index) => {
-            point.setPosition(Cesium.Cartographic.toCartesian(updatedPositions[index]));
+            point.setPosition(Cartographic.toCartesian(updatedPositions[index]));
           });
         });
       }
@@ -531,7 +532,7 @@ export class PolygonsEditorService {
       polygonOptions.allowDrag = false;
       polygonOptions.polylineProps.clampToGround = true;
       polygonOptions.pointProps.heightReference = polygonOptions.clampHeightTo3DOptions.clampToTerrain ?
-        Cesium.HeightReference.CLAMP_TO_GROUND : Cesium.HeightReference.RELATIVE_TO_GROUND;
+        HeightReference.CLAMP_TO_GROUND : HeightReference.RELATIVE_TO_GROUND;
       polygonOptions.pointProps.disableDepthTestDistance = Number.POSITIVE_INFINITY;
     }
     return polygonOptions;

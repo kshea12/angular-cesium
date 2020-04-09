@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AcMapComponent } from '../../components/ac-map/ac-map.component';
+import { Ellipsoid, SceneMode } from 'cesium';
 
 /**
  *  The service manages `ac-map` instances. `ac-map` register itself to this service.
@@ -79,13 +80,13 @@ export class MapsManagerService {
 
           const slaveCamera = slaveMap.getCameraService().getCamera();
           const slaveCameraCartographic = slaveCamera.positionCartographic;
-          const position = Cesium.Ellipsoid.WGS84.cartographicToCartesian({
+          const position = Ellipsoid.WGS84.cartographicToCartesian({
             longitude: masterCameraCartographic.longitude,
             latitude: masterCameraCartographic.latitude,
             height: slaveMapOptions.bindZoom ? masterCameraCartographic.height : slaveCameraCartographic.height,
           });
 
-          if (slaveMap.getCesiumViewer().scene.mode !== Cesium.SceneMode.MORPHING) {
+          if (slaveMap.getCesiumViewer().scene.mode !== SceneMode.MORPHING) {
             slaveCamera.setView({
               destination: position,
               orientation: {

@@ -1,7 +1,7 @@
 import { CesiumService } from '../../../cesium/cesium.service';
 import { Injectable } from '@angular/core';
 import { StaticPrimitiveDrawer } from '../static-primitive-drawer/static-primitive-drawer.service';
-
+import { EllipseGeometry } from 'cesium'
 
 /**
  + *  This drawer is responsible for drawing an ellipse over the Cesium map.
@@ -11,6 +11,6 @@ import { StaticPrimitiveDrawer } from '../static-primitive-drawer/static-primiti
 @Injectable()
 export class StaticEllipseDrawerService extends StaticPrimitiveDrawer {
   constructor(cesiumService: CesiumService) {
-    super(Cesium.EllipseGeometry, cesiumService);
+    super(EllipseGeometry, cesiumService);
   }
 }

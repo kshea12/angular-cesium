@@ -11,6 +11,7 @@ import { CesiumEvent } from './consts/cesium-event.enum';
 import { PlonterService } from '../plonter/plonter.service';
 import { UtilsService } from '../../utils/utils.service';
 import { CesiumDragDropHelper } from './event-observers/cesium-drag-drop-helper';
+import { Entity } from 'cesium';
 
 class Registration {
   constructor(public observable: Observable<EventResult>,
@@ -245,7 +246,7 @@ export class MapEventsManagerService {
 
     // Picks can be cesium entity or cesium primitive
     if (picks) {
-      picks = picks.map((pick: any) => pick.id && pick.id instanceof Cesium.Entity ? pick.id : pick.primitive);
+      picks = picks.map((pick: any) => pick.id && pick.id instanceof Entity ? pick.id : pick.primitive);
     }
 
     return { movement: movement, cesiumEntities: picks };

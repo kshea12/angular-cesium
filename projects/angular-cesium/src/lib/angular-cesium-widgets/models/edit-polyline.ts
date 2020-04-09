@@ -1,6 +1,7 @@
 import { AcEntity } from '../../angular-cesium/models/ac-entity';
 import { Cartesian3 } from '../../angular-cesium/models/cartesian3';
 import { PolylineProps } from './polyline-edit-options';
+import { CallbackProperty } from 'cesium';
 
 export class EditPolyline extends AcEntity {
   static counter = 0;
@@ -35,7 +36,7 @@ export class EditPolyline extends AcEntity {
 
 
   getPositionsCallbackProperty(): Cartesian3[] {
-    return new Cesium.CallbackProperty(this.getPositions.bind(this), false);
+    return new CallbackProperty(this.getPositions.bind(this), false);
   }
 
   validatePositions(): boolean {

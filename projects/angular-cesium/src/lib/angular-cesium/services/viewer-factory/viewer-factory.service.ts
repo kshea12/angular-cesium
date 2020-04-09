@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Viewer } from 'cesium';
 
 @Injectable()
 export class ViewerFactory {
-  cesium: any;
 
-
-  constructor() {
-    this.cesium = Cesium;
-  }
+  constructor() { }
 
   /**
    * Creates a viewer with default or custom options
@@ -19,17 +16,17 @@ export class ViewerFactory {
   createViewer(mapContainer: HTMLElement, options?: any) {
     let viewer = null;
     if (options) {
-      viewer = new this.cesium.Viewer(mapContainer, {
+      viewer = new Viewer(mapContainer, {
         contextOptions: {
-          webgl: {preserveDrawingBuffer: true}
+          webgl: { preserveDrawingBuffer: true }
         },
         ...options
       });
     } else {
-      viewer = new this.cesium.Viewer(mapContainer,
+      viewer = new Viewer(mapContainer,
         {
           contextOptions: {
-            webgl: {preserveDrawingBuffer: true}
+            webgl: { preserveDrawingBuffer: true }
           },
         });
     }

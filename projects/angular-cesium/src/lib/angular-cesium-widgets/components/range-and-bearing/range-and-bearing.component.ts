@@ -7,6 +7,9 @@ import { LabelProps, LabelStyle } from '../../models/label-props';
 import { PolylineEditUpdate } from '../../models/polyline-edit-update';
 import { EditModes } from '../../models/edit-mode.enum';
 import { PolylinesEditorService } from '../../services/entity-editors/polyline-editor/polylines-editor.service';
+import { Cartesian2 as CesiumCartesian2 } from 'cesium';
+import { Cartesian3 as CesiumCartesian3 } from 'cesium';
+import { Color } from 'cesium';
 
 /**
  *
@@ -95,7 +98,7 @@ export class RangeAndBearingComponent {
             if (index !== 0) {
               const previousPosition = array[index - 1];
               const bearing = this.coordinateConverter.bearingToCartesian(previousPosition, position);
-              const distance = Cesium.Cartesian3.distance(previousPosition, position) / 1000;
+              const distance = CesiumCartesian3.distance(previousPosition, position) / 1000;
               labels.push(
                 {
                   text:
@@ -104,14 +107,14 @@ export class RangeAndBearingComponent {
                     `${bearing.toFixed(2)}°`,
                   scale: 0.2,
                   font: '80px Helvetica',
-                  pixelOffset: new Cesium.Cartesian2(-20, -8),
-                  position: new Cesium.Cartesian3(
+                  pixelOffset: new CesiumCartesian2(-20, -8),
+                  position: new CesiumCartesian3(
                     (position.x + previousPosition.x) / 2,
                     (position.y + previousPosition.y) / 2,
                     (position.z + previousPosition.z) / 2,
                   ),
-                  fillColor: Cesium.Color.WHITE,
-                  outlineColor: Cesium.Color.WHITE,
+                  fillColor: Color.WHITE,
+                  outlineColor: Color.WHITE,
                   showBackground: true,
                   ...(this.labelsStyle as any),
                   ...(labelsStyle as any),
@@ -125,10 +128,10 @@ export class RangeAndBearingComponent {
                     `${(totalDistance + distance).toFixed(2)} Km`,
                   scale: 0.2,
                   font: '80px Helvetica',
-                  pixelOffset: new Cesium.Cartesian2(-35, -8),
+                  pixelOffset: new CesiumCartesian2(-35, -8),
                   position: position,
-                  fillColor: Cesium.Color.WHITE,
-                  outlineColor: Cesium.Color.WHITE,
+                  fillColor: Color.WHITE,
+                  outlineColor: Color.WHITE,
                   showBackground: true,
                   ...(this.labelsStyle as any),
                   ...(labelsStyle as any),
@@ -147,10 +150,10 @@ export class RangeAndBearingComponent {
               text: (distanceStringFn && distanceStringFn(0)) || (this.distanceStringFn && this.distanceStringFn(0)) || `0 Km`,
               scale: 0.2,
               font: '80px Helvetica',
-              pixelOffset: new Cesium.Cartesian2(-20, -8),
+              pixelOffset: new CesiumCartesian2(-20, -8),
               position: positions[0],
-              fillColor: Cesium.Color.WHITE,
-              outlineColor: Cesium.Color.WHITE,
+              fillColor: Color.WHITE,
+              outlineColor: Color.WHITE,
               showBackground: true,
               ...(this.labelsStyle as any),
               ...(labelsStyle as any),

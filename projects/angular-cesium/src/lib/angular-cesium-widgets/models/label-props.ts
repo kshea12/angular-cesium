@@ -1,5 +1,9 @@
 import { Cartesian3 } from '../../angular-cesium/models/cartesian3';
 import { Cartesian2 } from '../../angular-cesium/models/cartesian2';
+import { Cartesian2 as CesiumCartesian2 } from 'cesium';
+import { Cartesian3 as CesiumCartesian3 } from 'cesium';
+import { LabelStyle as CesiumLabelStyle } from 'cesium';
+import { Color, HeightReference, HorizontalOrigin, VerticalOrigin } from 'cesium';
 
 export interface LabelStyle {
   show?: boolean;
@@ -51,25 +55,25 @@ export interface LabelProps {
 }
 
 export const defaultLabelProps: LabelProps = {
-  backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.7),
-  backgroundPadding: new Cesium.Cartesian2(25, 20),
+  backgroundColor: new Color(0.165, 0.165, 0.165, 0.7),
+  backgroundPadding: new CesiumCartesian2(25, 20),
   distanceDisplayCondition: undefined,
-  fillColor: Cesium.Color.WHITE,
+  fillColor: Color.WHITE,
   font: '30px sans-serif',
-  heightReference: Cesium.HeightReference.NONE,
-  horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
-  outlineColor: Cesium.Color.BLACK,
+  heightReference: HeightReference.NONE,
+  horizontalOrigin: HorizontalOrigin.LEFT,
+  outlineColor: Color.BLACK,
   outlineWidth: 1.0,
-  pixelOffset: Cesium.Cartesian2.ZERO,
+  pixelOffset: CesiumCartesian2.ZERO,
   pixelOffsetScaleByDistance: undefined,
   scale: 1.0,
   scaleByDistance: undefined,
   show: true,
   showBackground: false,
-  style: Cesium.LabelStyle.FILL,
+  style: CesiumLabelStyle.FILL,
   text: '',
   translucencyByDistance: undefined,
-  verticalOrigin: Cesium.VerticalOrigin.BASELINE,
-  eyeOffset: Cesium.Cartesian3.ZERO,
+  verticalOrigin: VerticalOrigin.BASELINE,
+  eyeOffset: CesiumCartesian3.ZERO,
   disableDepthTestDistance: 0,
 };

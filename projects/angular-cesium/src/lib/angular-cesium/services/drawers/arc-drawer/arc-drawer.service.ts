@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { CesiumService } from '../../cesium/cesium.service';
 import { PrimitivesDrawerService } from '../primitives-drawer/primitives-drawer.service';
 import { GeoUtilsService } from '../../geo-utils/geo-utils.service';
+import { Material, PolylineCollection } from 'cesium'
 
 /**
  +  This drawer is responsible for drawing an arc over the Cesium map.
@@ -12,7 +13,7 @@ import { GeoUtilsService } from '../../geo-utils/geo-utils.service';
 @Injectable()
 export class ArcDrawerService extends PrimitivesDrawerService {
   constructor(cesiumService: CesiumService) {
-    super(Cesium.PolylineCollection, cesiumService);
+    super(PolylineCollection, cesiumService);
   }
 
   _calculateArcPositions(cesiumProps: any) {
@@ -43,7 +44,7 @@ export class ArcDrawerService extends PrimitivesDrawerService {
   add(cesiumProps: any): any {
     cesiumProps.positions = this._calculateArc(cesiumProps);
     if (cesiumProps.color) {
-      const material = Cesium.Material.fromType('Color');
+      const material = Material.fromType('Color');
       material.uniforms.color = cesiumProps.color;
       cesiumProps.material = material;
     }

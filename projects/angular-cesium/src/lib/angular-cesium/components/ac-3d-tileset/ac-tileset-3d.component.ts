@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { CesiumService } from '../../services/cesium/cesium.service';
 import { Checker } from '../../utils/checker';
+import { Cesium3DTileset, Cesium3DTileStyle, PrimitiveCollection } from 'cesium'
 
 /**
  *  This component is used for adding a 3d tileset layer to the map (ac-map).
@@ -54,13 +55,13 @@ export class AcTileset3dComponent implements OnInit, OnChanges, OnDestroy {
       throw new Error('Options must have a url');
     }
 
-    this._3dtilesCollection = new Cesium.PrimitiveCollection();
+    this._3dtilesCollection = new PrimitiveCollection();
     this.cesiumService.getScene().primitives.add(this._3dtilesCollection);
 
     if (this.show) {
-      this.tilesetInstance = this._3dtilesCollection.add(new Cesium.Cesium3DTileset(this.options), this.index);
+      this.tilesetInstance = this._3dtilesCollection.add(new Cesium3DTileset(this.options), this.index);
       if (this.style) {
-        this.tilesetInstance.style = new Cesium.Cesium3DTileStyle(this.style);
+        this.tilesetInstance.style = new Cesium3DTileStyle(this.style);
       }
     }
   }
@@ -73,9 +74,9 @@ export class AcTileset3dComponent implements OnInit, OnChanges, OnDestroy {
         if (this.tilesetInstance) {
           this._3dtilesCollection.add(this.tilesetInstance, this.index);
         } else {
-          this.tilesetInstance = this._3dtilesCollection.add(new Cesium.Cesium3DTileset(this.options), this.index);
+          this.tilesetInstance = this._3dtilesCollection.add(new Cesium3DTileset(this.options), this.index);
           if (this.style) {
-            this.tilesetInstance.style = new Cesium.Cesium3DTileStyle(this.style);
+            this.tilesetInstance.style = new Cesium3DTileStyle(this.style);
           }
         }
       } else if (this.tilesetInstance) {
@@ -85,7 +86,7 @@ export class AcTileset3dComponent implements OnInit, OnChanges, OnDestroy {
     if (changes['style'] && !changes['style'].isFirstChange()) {
       const styleValue = changes['style'].currentValue;
       if (this.tilesetInstance) {
-        this.tilesetInstance.style = new Cesium.Cesium3DTileStyle(this.style);
+        this.tilesetInstance.style = new Cesium3DTileStyle(this.style);
       }
     }
   }

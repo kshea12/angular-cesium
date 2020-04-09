@@ -9,6 +9,7 @@ import { PointProps } from './point-edit-options';
 import { PolylineProps } from './polyline-edit-options';
 import { defaultLabelProps, LabelProps } from './label-props';
 import { EllipseProps } from './ellipse-edit-options';
+import { CallbackProperty } from 'cesium';
 
 export class EditableCircle extends AcEntity {
   private _center: EditPoint;
@@ -207,7 +208,7 @@ export class EditableCircle extends AcEntity {
   }
 
   getRadiusCallbackProperty() {
-    return new Cesium.CallbackProperty(this.getRadius.bind(this), false);
+    return new CallbackProperty(this.getRadius.bind(this), false);
   }
 
   getCenter(): Cartesian3 {
@@ -215,7 +216,7 @@ export class EditableCircle extends AcEntity {
   }
 
   getCenterCallbackProperty() {
-    return new Cesium.CallbackProperty(this.getCenter.bind(this), false);
+    return new CallbackProperty(this.getCenter.bind(this), false);
   }
 
   getRadiusPoint(): Cartesian3 {

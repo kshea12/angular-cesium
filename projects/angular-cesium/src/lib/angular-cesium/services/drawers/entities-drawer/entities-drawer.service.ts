@@ -3,6 +3,7 @@ import { CesiumService } from '../../cesium/cesium.service';
 import { GraphicsType } from './enums/graphics-type.enum';
 import { EntitiesDrawerOptions } from '../../../models/entities-drawer-options';
 import { OptimizedEntityCollection } from './optimized-entity-collection';
+import { CallbackProperty, CustomDataSource } from 'cesium';
 
 /**
  *  General primitives drawer responsible of drawing Cesium primitives.
@@ -48,7 +49,7 @@ export class EntitiesDrawerService extends BasicDrawerService {
     const finalOptions = options || this.defaultOptions;
     const dataSources = [];
     for (let i = 0; i < finalOptions.collectionsNumber; i++) {
-      const dataSource = new Cesium.CustomDataSource(this.graphicsTypeName);
+      const dataSource = new CustomDataSource(this.graphicsTypeName);
       dataSources.push(dataSource);
       this.cesiumService.getViewer().dataSources.add(dataSource);
       this.entityCollections.set(
@@ -87,7 +88,7 @@ export class EntitiesDrawerService extends BasicDrawerService {
   update(entity: any, cesiumProps: any) {
     this.suspendEntityCollection(entity);
 
-    if (entity.position instanceof Cesium.CallbackProperty) {
+    if (entity.position instanceof CallbackProperty) {
       if (entity.position._isConstant) {
         entity.position = cesiumProps.position;
       }
@@ -133,4 +134,3 @@ export class EntitiesDrawerService extends BasicDrawerService {
     entityCollection.suspend();
   }
 }
-

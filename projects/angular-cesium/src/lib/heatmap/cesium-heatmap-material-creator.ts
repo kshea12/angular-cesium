@@ -3,6 +3,9 @@ import { Cartesian3 } from '../angular-cesium/models/cartesian3';
 import { GeoUtilsService } from '../angular-cesium/services/geo-utils/geo-utils.service';
 import * as h337 from 'heatmap.js/build/heatmap.js';
 import { Injectable } from '@angular/core';
+import { Rectangle as CesiumRectangle } from 'cesium'
+import { Cartesian3 as CesiumCartesian3 } from 'cesium'
+import { Cartographic, ImageMaterialProperty, WebMercatorProjection } from 'cesium'
 
 // Consider moving to a different package.
 
@@ -107,7 +110,7 @@ export class CesiumHeatMapMaterialCreator {
     },
   };
 
-  WMP = new Cesium.WebMercatorProjection();
+  WMP = new WebMercatorProjection();
   _spacing: number;
   width: number;
   height: number;
@@ -161,7 +164,7 @@ export class CesiumHeatMapMaterialCreator {
     );
 
     const ellipsePoints = [top, right, bottom, left];
-    return Cesium.Rectangle.fromCartesianArray(ellipsePoints);
+    return CesiumRectangle.fromCartesianArray(ellipsePoints);
   }
 
   /**
@@ -169,7 +172,7 @@ export class CesiumHeatMapMaterialCreator {
    * @param points Cartesian3
    */
   static calculateContainingRectFromPoints(points: Cartesian3[]) {
-    return Cesium.Rectangle.fromCartesianArray(points);
+    return CesiumRectangle.fromCartesianArray(points);
   }
 
 
@@ -257,7 +260,7 @@ export class CesiumHeatMapMaterialCreator {
    *  p: the WGS84 location like {x: lon, y: lat}
    */
   private wgs84ToMercator(p: Cartesian2) {
-    const mp = this.WMP.project(Cesium.Cartographic.fromDegrees(p.x, p.y));
+    const mp = this.WMP.project(Cartographic.fromDegrees(p.x, p.y));
     return {
       x: mp.x,
       y: mp.y
@@ -274,8 +277,8 @@ export class CesiumHeatMapMaterialCreator {
    */
   private wgs84ToMercatorBB(bb: any) {
     // TODO validate rad or deg
-    const sw = this.WMP.project(Cesium.Cartographic.fromRadians(bb.west, bb.south));
-    const ne = this.WMP.project(Cesium.Cartographic.fromRadians(bb.east, bb.north));
+    const sw = this.WMP.project(Cartographic.fromRadians(bb.west, bb.south));
+    const ne = this.WMP.project(Cartographic.fromRadians(bb.east, bb.north));
     return {
       north: ne.y,
       east: ne.x,
@@ -289,8 +292,8 @@ export class CesiumHeatMapMaterialCreator {
    *  bb: the mercator bounding box like {north, east, south, west}
    */
   private mercatorToWgs84BB(bb: any) {
-    const sw = this.WMP.unproject(new Cesium.Cartesian3(bb.west, bb.south));
-    const ne = this.WMP.unproject(new Cesium.Cartesian3(bb.east, bb.north));
+    const sw = this.WMP.unproject(new CesiumCartesian3(bb.west, bb.south));
+    const ne = this.WMP.unproject(new CesiumCartesian3(bb.east, bb.north));
     return {
       north: this.rad2deg(ne.latitude),
       east: this.rad2deg(ne.longitude),
@@ -367,7 +370,7 @@ export class CesiumHeatMapMaterialCreator {
     this._mbounds.north += this._spacing * this._factor;
 
     this.bounds = this.mercatorToWgs84BB(this._mbounds);
-    this._rectangle = Cesium.Rectangle.fromDegrees(this.bounds.west, this.bounds.south, this.bounds.east, this.bounds.north);
+    this._rectangle = CesiumRectangle.fromDegrees(this.bounds.west, this.bounds.south, this.bounds.east, this.bounds.north);
 
     const {container, id} = this.createContainer(this.height, this.width);
     Object.assign(finalHeatmapOptions, {container});
@@ -377,7 +380,7 @@ export class CesiumHeatMapMaterialCreator {
 
     this.setWGS84Data(0, 100, heatPointsData);
     const heatMapCanvas = this.heatmap._renderer.canvas;
-    const heatMapMaterial = new Cesium.ImageMaterialProperty({
+    const heatMapMaterial = new ImageMaterialProperty({
       image: heatMapCanvas,
       transparent: true,
     });

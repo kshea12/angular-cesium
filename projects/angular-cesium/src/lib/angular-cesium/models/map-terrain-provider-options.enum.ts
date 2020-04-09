@@ -1,8 +1,17 @@
+import {
+  ArcGISTiledElevationTerrainProvider,
+  CesiumTerrainProvider,
+  EllipsoidTerrainProvider,
+  GoogleEarthEnterpriseTerrainProvider,
+  VRTheWorldTerrainProvider,
+  createWorldTerrain
+} from 'cesium';
+
 export enum MapTerrainProviderOptions {
-  CesiumTerrain = Cesium.CesiumTerrainProvider,
-  ArcGISTiledElevation = Cesium.ArcGISTiledElevationTerrainProvider,
-  GoogleEarthEnterprise = Cesium.GoogleEarthEnterpriseTerrainProvider,
-  VRTheWorld = Cesium.VRTheWorldTerrainProvider,
-  Ellipsoid = Cesium.EllipsoidTerrainProvider,
-  WorldTerrain = Cesium.createWorldTerrain
+  CesiumTerrain = CesiumTerrainProvider,
+  ArcGISTiledElevation = ArcGISTiledElevationTerrainProvider,
+  GoogleEarthEnterprise = GoogleEarthEnterpriseTerrainProvider,
+  VRTheWorld = VRTheWorldTerrainProvider,
+  Ellipsoid = EllipsoidTerrainProvider,
+  WorldTerrain = createWorldTerrain
 }

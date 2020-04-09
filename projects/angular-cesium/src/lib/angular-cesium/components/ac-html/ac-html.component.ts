@@ -1,5 +1,6 @@
 import { Component, DoCheck, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { CesiumService } from '../../services/cesium/cesium.service';
+import { SceneTransforms } from 'cesium'
 
 /**
  *  This is an html implementation.
@@ -60,7 +61,7 @@ export class AcHtmlComponent implements DoCheck, OnDestroy, OnInit {
     if (!this.isDraw) {
       this.isDraw = true;
       this.preRenderEventListener = () => {
-        const screenPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.cesiumService.getScene(),
+        const screenPosition = SceneTransforms.wgs84ToWindowCoordinates(this.cesiumService.getScene(),
           this.props.position);
         this.setScreenPosition(screenPosition);
       };

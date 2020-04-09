@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CesiumService } from '../../cesium/cesium.service';
 import { PrimitivesDrawerService } from '../primitives-drawer/primitives-drawer.service';
+import { LabelCollection } from 'cesium';
 
 /**
  *  This drawer is responsible for drawing labels as primitives.
@@ -9,6 +10,6 @@ import { PrimitivesDrawerService } from '../primitives-drawer/primitives-drawer.
 @Injectable()
 export class LabelPrimitiveDrawerService extends PrimitivesDrawerService {
   constructor(cesiumService: CesiumService) {
-    super(Cesium.LabelCollection, cesiumService);
+    super(LabelCollection, cesiumService);
   }
 }

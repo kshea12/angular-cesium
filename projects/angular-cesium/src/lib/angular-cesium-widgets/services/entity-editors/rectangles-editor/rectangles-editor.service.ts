@@ -20,6 +20,7 @@ import { RectangleEditOptions } from '../../../models/rectangle-edit-options';
 import { PointProps } from '../../../models/point-edit-options';
 import { LabelProps } from '../../../models/label-props';
 import { generateKey } from '../../utils';
+import { ClassificationType, Color, HeightReference } from 'cesium';
 
 export const DEFAULT_RECTANGLE_OPTIONS: RectangleEditOptions = {
   addPointEvent: CesiumEvent.LEFT_CLICK,
@@ -27,8 +28,8 @@ export const DEFAULT_RECTANGLE_OPTIONS: RectangleEditOptions = {
   dragShapeEvent: CesiumEvent.LEFT_CLICK_DRAG,
   allowDrag: true,
   pointProps: {
-    color: Cesium.Color.WHITE,
-    outlineColor: Cesium.Color.BLACK.withAlpha(0.2),
+    color: Color.WHITE,
+    outlineColor: Color.BLACK.withAlpha(0.2),
     outlineWidth: 1,
     pixelSize: 13,
     virtualPointPixelSize: 8,
@@ -39,11 +40,11 @@ export const DEFAULT_RECTANGLE_OPTIONS: RectangleEditOptions = {
   rectangleProps: {
     height: 0,
     extrudedHeight: 0,
-    material: Cesium.Color.CORNFLOWERBLUE.withAlpha(0.4),
+    material: Color.CORNFLOWERBLUE.withAlpha(0.4),
     fill: true,
-    classificationType: Cesium.ClassificationType.BOTH,
+    classificationType: ClassificationType.BOTH,
     outline: true,
-    outlineColor: Cesium.Color.WHITE,
+    outlineColor: Color.WHITE,
     zIndex: 0,
   },
   clampHeightTo3D: false,
@@ -353,7 +354,7 @@ export class RectanglesEditorService {
       }
 
       rectangleOptions.pointProps.heightReference =  rectangleOptions.clampHeightTo3DOptions.clampToTerrain ?
-        Cesium.HeightReference.CLAMP_TO_GROUND : Cesium.HeightReference.RELATIVE_TO_GROUND;
+        HeightReference.CLAMP_TO_GROUND : HeightReference.RELATIVE_TO_GROUND;
       rectangleOptions.pointProps.disableDepthTestDistance = Number.POSITIVE_INFINITY;
     }
     return rectangleOptions;

@@ -5,6 +5,7 @@ import { CoordinateConverter } from '../../angular-cesium/services/coordinate-co
 import { EditPoint } from './edit-point';
 import { defaultLabelProps, LabelProps } from './label-props';
 import { PointEditOptions, PointProps } from './point-edit-options';
+import { CallbackProperty, Color } from 'cesium'
 
 interface PositionWithPointProps {
   position: Cartesian3;
@@ -61,9 +62,9 @@ export class EditablePoint extends AcEntity {
   set enableEdit(value: boolean) {
     this._enableEdit = value;
     if (value) {
-      this.point.props.color = Cesium.Color.WHITE;
+      this.point.props.color = Color.WHITE;
     } else {
-      this.point.props.color = Cesium.Color.DIMGREY;
+      this.point.props.color = Color.DIMGREY;
       this.point.props.pixelSize = 10;
     }
     this.updatePointLayer();
@@ -119,7 +120,7 @@ export class EditablePoint extends AcEntity {
   }
 
   getPositionCallbackProperty(): Cartesian3 {
-    return new Cesium.CallbackProperty(this.getPosition.bind(this), false);
+    return new CallbackProperty(this.getPosition.bind(this), false);
   }
 
   private updatePointLayer() {

@@ -18,6 +18,7 @@ import { CesiumService } from '../../../../angular-cesium';
 import { PointEditOptions, PointProps } from '../../../models/point-edit-options';
 import { PointEditUpdate } from '../../../models/point-edit-update';
 import { PointEditorObservable } from '../../../models/point-editor-observable';
+import { Color } from 'cesium'
 
 export const DEFAULT_POINT_OPTIONS: PointEditOptions = {
   addLastPointEvent: CesiumEvent.LEFT_CLICK,
@@ -25,8 +26,8 @@ export const DEFAULT_POINT_OPTIONS: PointEditOptions = {
   dragPointEvent: CesiumEvent.LEFT_CLICK_DRAG,
   allowDrag: true,
   pointProps: {
-    color: Cesium.Color.WHITE.withAlpha(0.95),
-    outlineColor: Cesium.Color.BLACK.withAlpha(0.5),
+    color: Color.WHITE.withAlpha(0.95),
+    outlineColor: Color.BLACK.withAlpha(0.5),
     outlineWidth: 1,
     pixelSize: 10,
     show: true,
